@@ -1,0 +1,9 @@
+charts/
+models/
+src/
+test/
+.env
+supabase/
+venv/
+.DS_Store
+sub_tasks/

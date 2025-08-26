@@ -1,0 +1,186 @@
+{
+  "_source_id": 25,
+  "sources": {
+    "AI领域高薪职业发展路径分析": {
+      "https://www.coursera.org/resources/job-leveling-matrix-for-artificial-intelligence-career-pathways": {
+        "id": 1,
+        "publisher": "Coursera",
+        "url": "https://www.coursera.org/resources/job-leveling-matrix-for-artificial-intelligence-career-pathways",
+        "title": "人工智能职业路线图：职位和级别指南",
+        "info": "详细的AI职业发展路径，包括AI研究科学家、机器学习工程师、AI产品经理等6个核心角色的技能要求和晋升路径"
+      },
+      "https://menlovc.com/perspective/ai-compensation-trends-the-real-cost-of-top-1-ai-technical-talent/": {
+        "id": 2,
+        "publisher": "Menlo Ventures",
+        "url": "https://menlovc.com/perspective/ai-compensation-trends-the-real-cost-of-top-1-ai-technical-talent/",
+        "title": "AI薪酬趋势：顶级1%AI技术人才的真实成本",
+        "info": "顶级AI人才薪酬分析，IC角色总现金$265k-350k，创业公司基础薪资$250k起，顶级人才溢价可达$100万"
+      },
+      "https://www.forbes.com/sites/jodiecook/2024/09/18/how-much-can-you-earn-as-an-ai-consultant-in-2024/": {
+        "id": 3,
+        "publisher": "Forbes",
+        "url": "https://www.forbes.com/sites/jodiecook/2024/09/18/how-much-can-you-earn-as-an-ai-consultant-in-2024/",
+        "title": "2024年AI咨询师收入分析",
+        "info": "AI咨询师收入模式，时薪$530-1500，月服务包$5k-10k，大型项目$50k-175k，市场年增长39%，预计2028年达$630B"
+      },
+      "https://timesofindia.indiatimes.com/technology/tech-news/meet-the-richest-ai-billionaires-turning-smart-tech-into-billion-dollar-fortunes-including-sam-altman-jensen-huang-and-more/articleshow/123115292.cms": {
+        "id": 4,
+        "publisher": "Times of India",
+        "url": "https://timesofindia.indiatimes.com/technology/tech-news/meet-the-richest-ai-billionaires-turning-smart-tech-into-billion-dollar-fortunes-including-sam-altman-jensen-huang-and-more/articleshow/123115292.cms",
+        "title": "AI亿万富翁榜单",
+        "info": "Jensen Huang（NVIDIA）净资产$113B，Demis Hassabis（DeepMind）$523M-653M，AI领域顶级财富创造者案例"
+      },
+      "https://www.businessinsider.com/openai-ceo-sam-altman-compensation-pay-2024-11": {
+        "id": 5,
+        "publisher": "Business Insider",
+        "url": "https://www.businessinsider.com/openai-ceo-sam-altman-compensation-pay-2024-11",
+        "title": "OpenAI CEO Sam Altman薪酬分析",
+        "info": "Sam Altman 2023年薪酬仅$76,001，但净资产估计$2B+，预计获得OpenAI 7%股权价值$10.5B"
+      },
+      "https://news.crunchbase.com/startups/google-stanford-and-the-idf-professional-backgrounds-of-unicorn-founders/": {
+        "id": 6,
+        "publisher": "Crunchbase News",
+        "url": "https://news.crunchbase.com/startups/google-stanford-and-the-idf-professional-backgrounds-of-unicorn-founders/",
+        "title": "独角兽创始人的专业背景分析",
+        "info": "独角兽创始人背景分析：40%曾创始其他公司，21%工程师背景，17%软件工程师，谷歌台96人、微软64人、IBM42人"
+      },
+      "https://www.sciencedirect.com/science/article/abs/pii/S0040162522006916": {
+        "id": 7,
+        "publisher": "Technological Forecasting and Social Change",
+        "url": "https://www.sciencedirect.com/science/article/abs/pii/S0040162522006916",
+        "title": "AI产业创业关键成功因素研究",
+        "info": "AI产业创业关键成功因素：关联因素、驱动因素、自主因素和依赖因素，研究样本283人"
+      },
+      "https://medium.com/@moneytent/10-ai-business-models-that-can-generate-10-000-month-in-2025-cc97b6b6bde9": {
+        "id": 8,
+        "publisher": "Medium",
+        "url": "https://medium.com/@moneytent/10-ai-business-models-that-can-generate-10-000-month-in-2025-cc97b6b6bde9",
+        "title": "2025年能产生$10,000/月的AI商业模式",
+        "info": "10种AI商业模式分析：从AI内容营销到数据分析服务，月收入目标$10k+，AI市场2030年预计超$826B"
+      },
+      "https://www.wsj.com/articles/meet-the-highest-paid-information-technology-executives-of-2024-ff831e7b": {
+        "id": 9,
+        "publisher": "WSJ",
+        "url": "https://www.wsj.com/articles/meet-the-highest-paid-information-technology-executives-of-2024-ff831e7b",
+        "title": "2024年高薪 IT高管薪酬分析",
+        "info": "CTO薪酬分析：2024年中位CTO薪酬$240万，增长30.81%，大型科技公司CTO年薪$30万-$100万+"
+      },
+      "https://fortune.com/2025/07/11/how-much-ai-salary-meta-zuckerberg-200-million-compensation/": {
+        "id": 10,
+        "publisher": "Fortune",
+        "url": "https://fortune.com/2025/07/11/how-much-ai-salary-meta-zuckerberg-200-million-compensation/",
+        "title": "Meta为AI人才提供天价薪酬",
+        "info": "Meta提供顶级AI人才4年$3亿薪酬包，研究工程师最高$44万基础薪资，软件工程师最高$48万"
+      }
+    },
+    "AICS与MLE职业发展轨迹研究": {
+      "https://www.levels.fyi/companies/nvidia/salaries": {
+        "id": 11,
+        "publisher": "Levels.fyi",
+        "url": "https://www.levels.fyi/companies/nvidia/salaries",
+        "title": "NVIDIA薪资数据",
+        "info": "NVIDIA各职位薪资范围，软件工程师、硬件工程师、机器学习工程师等职位的详细薪酬信息"
+      },
+      "https://www.levels.fyi/companies/openai/salaries/software-engineer": {
+        "id": 12,
+        "publisher": "Levels.fyi",
+        "url": "https://www.levels.fyi/companies/openai/salaries/software-engineer",
+        "title": "OpenAI软件工程师薪资",
+        "info": "OpenAI L2-L6级别软件工程师薪资数据，中位数年薪$875K，包含PPU股权激励计划"
+      },
+      "https://ts2.tech/en/ai-specialist-salaries-in-2024-2025-a-comprehensive-report/": {
+        "id": 13,
+        "publisher": "TS2 Tech",
+        "url": "https://ts2.tech/en/ai-specialist-salaries-in-2024-2025-a-comprehensive-report/",
+        "title": "2024-2025年AI专家薪资综合报告",
+        "info": "全球AI专家薪资趋势，包括机器学习工程师、数据科学家、AI研究员等角色的详细薪资分析，覆盖OpenAI、Google、Meta等顶级公司"
+      },
+      "https://ts2.tech/en/ai-accelerator-chip-gold-rush-inside-the-global-race-for-a-300b-market-by-2030/": {
+        "id": 14,
+        "publisher": "TS2 Tech",
+        "url": "https://ts2.tech/en/ai-accelerator-chip-gold-rush-inside-the-global-race-for-a-300b-market-by-2030/",
+        "title": "AI加速芯片市场分析：2030年3000亿美元市场竞赛",
+        "info": "AI芯片市场规模预测、投资趋势、主要玩家分析，包括NVIDIA、Google、初创公司Cerebras、Graphcore等的市场地位和发展策略"
+      },
+      "https://www.datacamp.com/blog/how-to-become-a-machine-learning-engineer": {
+        "id": 15,
+        "publisher": "DataCamp",
+        "url": "https://www.datacamp.com/blog/how-to-become-a-machine-learning-engineer",
+        "title": "2025年机器学习工程师成长指南",
+        "info": "详细的MLE技能要求、学习路径、职业发展建议，包括技术技能、软技能和作品集构建策略"
+      },
+      "https://365datascience.com/career-advice/career-guides/machine-learning-engineer-job-outlook-2025/": {
+        "id": 16,
+        "publisher": "365 Data Science",
+        "url": "https://365datascience.com/career-advice/career-guides/machine-learning-engineer-job-outlook-2025/",
+        "title": "2025年机器学习工程师就业前景",
+        "info": "基于1157个美国职位分析的ML工程师市场趋势，技能要求统计，薪资分布和教育背景要求"
+      },
+      "https://www.reuters.com/technology/artificial-intelligence/ai-chipmaker-cerebras-files-us-ipo-2024-09-30/": {
+        "id": 17,
+        "publisher": "Reuters",
+        "url": "https://www.reuters.com/technology/artificial-intelligence/ai-chipmaker-cerebras-files-us-ipo-2024-09-30/",
+        "title": "Cerebras IPO申请分析",
+        "info": "Cerebras Systems IPO申请详情，2023年营收7870万美元，三倍增长，目标募资10亿美元，挑战NVIDIA市场地位"
+      },
+      "https://www.eetimes.com/ai-chip-startup-graphcore-acquired-by-softbank/": {
+        "id": 18,
+        "publisher": "EE Times",
+        "url": "https://www.eetimes.com/ai-chip-startup-graphcore-acquired-by-softbank/",
+        "title": "SoftBank收购Graphcore分析",
+        "info": "SoftBank以约4亿美元收购英国AI芯片公司Graphcore，相比28亿美元估值大幅折价，反映AI芯片初创公司面临的挑战"
+      },
+      "https://medium.com/@flexly-pro/machine-learning-engineer-career-path-skills-evolution-from-junior-to-principal-089c9e117164": {
+        "id": 19,
+        "publisher": "Medium",
+        "url": "https://medium.com/@flexly-pro/machine-learning-engineer-career-path-skills-evolution-from-junior-to-principal-089c9e117164",
+        "title": "机器学习工程师技能发展路径",
+        "info": "从初级到首席ML工程师的技能演进分析，包括各级别的技术要求、经验需求和软技能发展"
+      }
+    },
+    "个性化标签体系设计": {
+      "https://zhuanlan.zhihu.com/p/1017067389": {
+        "id": 20,
+        "publisher": "知乎专栏",
+        "url": "https://zhuanlan.zhihu.com/p/1017067389",
+        "title": "大模型时代的技术成熟度曲线（用户画像和标签体系篇）",
+        "info": "介绍了画像标签技术在个性化搜索推荐、精准营销、用户体验优化等五个场景的应用"
+      },
+      "https://www.hypers.com/content/archives/9879": {
+        "id": 21,
+        "publisher": "HYPERS嗨普智能",
+        "url": "https://www.hypers.com/content/archives/9879",
+        "title": "什么是智能标签？如何通过智能标签提升精准营销和个性化推荐？",
+        "info": "智能标签的定义、动态更新机制和企业应用价值"
+      },
+      "https://zhuanlan.zhihu.com/p/648773943": {
+        "id": 22,
+        "publisher": "知乎专栏",
+        "url": "https://zhuanlan.zhihu.com/p/648773943",
+        "title": "纯干货|用户画像的本质、标签体系、评估及应用",
+        "info": "用户画像在个性化推荐系统中的应用原理和标签体系构建方法"
+      },
+      "https://www.researchgate.net/publication/389912466_Exploring_the_MBTI_and_the_Career_Field_How_HR_Chooses_the_Best_Talent_Based_on_Personality": {
+        "id": 23,
+        "publisher": "ResearchGate",
+        "url": "https://www.researchgate.net/publication/389912466_Exploring_the_MBTI_and_the_Career_Field_How_HR_Chooses_the_Best_Talent_Based_on_Personality",
+        "title": "Exploring the MBTI and the Career Field: How HR Chooses the Best Talent Based on Personality",
+        "info": "MBTI与职业需求匹配关系的研究，企业精准招聘和团队建设的实践"
+      },
+      "docs/personalized_assessment_framework.md": {
+        "id": 24,
+        "publisher": "内部文档",
+        "url": "docs/personalized_assessment_framework.md",
+        "title": "个性化职业发展潜力评估框架",
+        "info": "完整的个性化职业发展潜力评估框架，包含批估维度体系、MBTI性格类型分析、技能评估等"
+      },
+      "docs/career_advancement_strategy_templates.md": {
+        "id": 25,
+        "publisher": "内部文档",
+        "url": "docs/career_advancement_strategy_templates.md",
+        "title": "职业进阶策略模板",
+        "info": "AI职业进阶策略模板，从入门到顶级专家的完整发展路径，包含基于MBTI的个性化发展建议"
+      }
+    }
+  }
+}
