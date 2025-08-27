@@ -1,9 +1,29 @@
-charts/
-models/
-src/
-test/
+# Dependencies
+**/node_modules
+**/.pnpm
+pnpm-lock.yaml
+
+# Visualizations
+**/charts
+
+# Build output
+**/dist
+**/build
+
+# IDE configuration
+.idea/
+.vscode/
+
+# Environment variables
 .env
-supabase/
-venv/
+.env.*
+!.env.example
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# System files
 .DS_Store
-sub_tasks/

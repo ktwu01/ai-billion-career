@@ -1,0 +1,22 @@
+CREATE TABLE learning_activities (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID,
+    activity_type TEXT NOT NULL,
+    title TEXT NOT NULL,
+    description TEXT,
+    provider TEXT,
+    duration_hours INTEGER,
+    completion_percentage INTEGER DEFAULT 0 CHECK (completion_percentage >= 0 AND completion_percentage <= 100),
+    status TEXT DEFAULT 'not_started' CHECK (status IN ('not_started',
+    'in_progress',
+    'completed',
+    'cancelled')),
+    start_date DATE,
+    completion_date DATE,
+    certificate_url TEXT,
+    rating INTEGER CHECK (rating >= 1 AND rating <= 5),
+    notes TEXT,
+    skills_gained TEXT[],
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);

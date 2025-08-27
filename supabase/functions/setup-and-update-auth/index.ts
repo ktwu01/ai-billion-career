@@ -1,0 +1,163 @@
+// Edge function to setup environment variables and update auth config
+
+import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+  "Content-Type": "application/json"
+};
+
+interface SupabaseAuthConfig {
+  site_url: string;
+  uri_allow_list?: string[];
+  redirect_urls?: string[];
+}
+
+serve(async (req) => {
+  // 处理CORS预检请求
+  if (req.method === "OPTIONS") {
+    return new Response(null, { headers: corsHeaders, status: 204 });
+  }
+
+  try {
+    // 使用直接值
+    const accessToken = "sbp_oauth_c4b6d055797fab3f15ae6d7b266f86840d0fbd86";
+    const projectId = "emywvwsqzixqsgfzadww";
+
+    // 设置环境变量
+    Deno.env.set("SUPABASE_ACCESS_TOKEN", accessToken);
+    Deno.env.set("SUPABASE_PROJECT_ID", projectId);
+
+    // 获取当前配置
+    const currentConfigResponse = await fetch(
+      `https://api.supabase.com/v1/projects/${projectId}/config/auth`,
+      {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${accessToken}`,
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    if (!currentConfigResponse.ok) {
+      const errorText = await currentConfigResponse.text();
+      throw new Error(`获取当前配置失败: ${currentConfigResponse.status} ${errorText}`);
+    }
+
+    const currentConfig = await currentConfigResponse.json();
+    console.log("当前配置:", JSON.stringify(currentConfig, null, 2));
+
+    // 设置固定的验证成功页面URL
+    const siteUrl = "https://ktwu01.github.io/VerificationSuccess/";
+    const allowList = [
+      siteUrl,
+      `${siteUrl}**`,
+      "http://localhost:3000",
+      "http://localhost:5173"
+    ];
+    
+    // 合并现有的重定向URL，并添加新的URL
+    let redirectUrls = currentConfig.redirect_urls || [];
+    const newRedirectUrls = [
+      siteUrl,
+      `${siteUrl}**`
+    ];
+    
+    // 确保不重复添加URL
+    for (const url of newRedirectUrls) {
+      if (!redirectUrls.includes(url)) {
+        redirectUrls.push(url);
+      }
+    }
+
+    // 新的认证配置
+    const newConfig: SupabaseAuthConfig = {
+      site_url: siteUrl,
+      uri_allow_list: allowList,
+      redirect_urls: redirectUrls
+    };
+
+    // 调用更新认证配置函数
+    const updateAuthResponse = await fetch(
+      "https://emywvwsqzixqsgfzadww.supabase.co/functions/v1/update-auth-config",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${Deno.env.get("SUPABASE_ANON_KEY")}`
+        },
+        body: JSON.stringify({})
+      }
+    );
+
+    if (!updateAuthResponse.ok) {
+      const errorText = await updateAuthResponse.text();
+      console.log("直接调用更新函数失败，尝试直接更新...");
+      
+      // 直接更新配置
+      const directUpdateResponse = await fetch(
+        `https://api.supabase.com/v1/projects/${projectId}/config/auth`,
+        {
+          method: "PUT",
+          headers: {
+            "Authorization": `Bearer ${accessToken}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(newConfig)
+        }
+      );
+
+      if (!directUpdateResponse.ok) {
+        const directErrorText = await directUpdateResponse.text();
+        throw new Error(`直接更新配置失败: ${directUpdateResponse.status} ${directErrorText}`);
+      }
+
+      const updatedConfig = await directUpdateResponse.json();
+
+      return new Response(
+        JSON.stringify({
+          success: true,
+          message: "邮件验证重定向配置已成功更新为固定页面",
+          fixed_verification_url: siteUrl,
+          method: "direct_update",
+          previous_config: {
+            site_url: currentConfig.site_url,
+            redirect_urls: currentConfig.redirect_urls
+          },
+          updated_config: {
+            site_url: updatedConfig.site_url,
+            redirect_urls: updatedConfig.redirect_urls
+          }
+        }),
+        { headers: corsHeaders }
+      );
+    }
+
+    const updateResult = await updateAuthResponse.json();
+
+    return new Response(
+      JSON.stringify({
+        success: true,
+        message: "邮件验证重定向配置已成功更新为固定页面",
+        fixed_verification_url: siteUrl,
+        method: "edge_function_call",
+        update_result: updateResult
+      }),
+      { headers: corsHeaders }
+    );
+
+  } catch (error) {
+    console.error("更新认证配置时出错:", error);
+    
+    return new Response(
+      JSON.stringify({
+        success: false,
+        error: error.message
+      }),
+      { headers: corsHeaders, status: 500 }
+    );
+  }
+});

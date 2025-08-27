@@ -1,0 +1,22 @@
+CREATE TABLE project_portfolio (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID,
+    project_name TEXT NOT NULL,
+    project_description TEXT,
+    role TEXT NOT NULL,
+    company TEXT,
+    project_status TEXT DEFAULT 'completed' CHECK (project_status IN ('completed',
+    'ongoing',
+    'cancelled')),
+    start_date DATE,
+    end_date DATE,
+    technologies_used TEXT[],
+    project_scale TEXT,
+    business_impact JSONB,
+    challenges_overcome TEXT[],
+    key_learnings TEXT[],
+    project_url TEXT,
+    repository_url TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);

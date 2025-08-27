@@ -1,0 +1,83 @@
+/* 自定义全局样式 */
+
+/* 按钮悬停效果 */
+button:not([disabled]):hover {
+  transform: scale(1.02);
+  transition: all 0.2s ease;
+}
+
+/* 输入框聚焦渐变边框 */
+input:focus,
+textarea:focus,
+select:focus {
+  border: 1px solid #4a5568;
+  box-shadow: 0 0 0 1px rgba(74, 85, 104, 0.2);
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+/* 卡片悬停阴影 */
+.card:hover {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+/* 滑动条样式 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a202c;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4a5568;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #718096;
+}
+
+/* 统一图表和卡片宽高 */
+.chart-container {
+  height: 300px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+/* 添加过渡效果 */
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* 页面内容边距一致性 */
+.content-container {
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+/* 统一标题样式 */
+.section-title {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #fff;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.section-title svg {
+  margin-right: 8px;
+  color: #4a5568;
+}

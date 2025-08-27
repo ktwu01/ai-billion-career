@@ -1,0 +1,22 @@
+CREATE TABLE user_profiles (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+    full_name TEXT,
+    email TEXT,
+    phone TEXT,
+    birth_date DATE,
+    gender TEXT,
+    education_level TEXT,
+    work_experience_years INTEGER,
+    current_position TEXT,
+    current_company TEXT,
+    target_position TEXT,
+    target_salary_range TEXT,
+    mbti_type TEXT,
+    personality_traits JSONB,
+    social_preferences JSONB,
+    learning_preferences JSONB,
+    risk_tolerance JSONB,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
