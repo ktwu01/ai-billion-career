@@ -33,5 +33,4 @@ Contributions are welcome. Please follow these steps:
 5.  Open a pull request.
 
 ## License
-
-This project is proprietary and confidential.
+CC BY NC-ND 4.0
