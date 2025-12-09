@@ -1,29 +1,30 @@
-# GitHub Pages Deployment Guide
+# Vercel Deployment Guide
 
-This project is configured to automatically deploy to GitHub Pages using GitHub Actions. Every time you push to the `main` branch, your site is automatically built and deployed.
+This project is configured to deploy to Vercel, the recommended platform for React + Vite + Supabase applications. Vercel provides automatic deployments, preview URLs for pull requests, and native Supabase integration.
 
 ---
 
 ## ✅ Current Configuration Status
 
-Your project needs to be configured for GitHub Pages deployment:
+Your project is ready for Vercel deployment:
 
-- ⏳ **GitHub Actions workflow** (`.github/workflows/deploy.yml`) - **TO BE CREATED**
 - ✅ **Vite build configured** (`vite.config.ts`)
-- ⏳ **Base path configuration** - **TO BE CONFIGURED**
 - ✅ **React SPA with client-side routing**
-- ✅ **Supabase backend** (runs independently from static hosting)
+- ✅ **Supabase backend** (runs independently)
+- ⏳ **Vercel account setup** - **REQUIRED**
+- ⏳ **Environment variables** - **TO BE CONFIGURED**
+- ⏳ **Git repository connected** - **REQUIRED**
 
 ---
 
 ## 🚀 Complete Deployment Steps
 
-### Step 1: Configure Vite for GitHub Pages
+### Step 1: Prepare Your Project
 
-First, we need to configure the base path in `vite.config.ts` to match your repository name:
+First, ensure your Vite config is clean (no base path needed for Vercel):
 
 ```typescript
-// ai-career-dashboard/vite.config.ts
+// ai-career-dashboard/vite.config.ts - Keep it as is (no base path needed)
 import path from "path"
 import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
@@ -39,7 +40,6 @@ export default defineConfig({
       includeProps: true,
     })
   ],
-  base: '/ai-billion-career/', // Add this line - matches your repo name
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -48,231 +48,230 @@ export default defineConfig({
 })
 ```
 
-### Step 2: Create GitHub Actions Workflow
+### Step 2: Move Supabase Credentials to Environment Variables
 
-Create the file `.github/workflows/deploy.yml` in your repository root:
+Update `ai-career-dashboard/src/lib/supabase.ts`:
 
-```yaml
-name: Deploy to GitHub Pages
+```typescript
+import { createClient } from '@supabase/supabase-js'
 
-on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://emywvwsqzixqsgfzadww.supabase.co'
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVteXd2d3Nxeml4cXNnZnphZHd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU0MDM4MzMsImV4cCI6MjA3MDk3OTgzM30.5Dr5TUnqlzdxh2giT0f2PZ6c01xWosREWG72142-4HE'
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+// 创建 Supabase 客户端
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: true
+  }
+})
 
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: ai-career-dashboard/package-lock.json
-
-      - name: Install dependencies
-        working-directory: ./ai-career-dashboard
-        run: npm ci
-
-      - name: Build
-        working-directory: ./ai-career-dashboard
-        run: npm run build:prod
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./ai-career-dashboard/dist
-
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+// ... rest of the file stays the same
 ```
 
-### Step 3: Add SPA Fallback for Client-Side Routing
+Update your `.env` file in `ai-career-dashboard/`:
 
-Create a `404.html` file in `ai-career-dashboard/public/` directory:
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Billion Career</title>
-  <script>
-    // Single Page Apps for GitHub Pages
-    // https://github.com/rafgraph/spa-github-pages
-    sessionStorage.redirect = location.href;
-  </script>
-  <meta http-equiv="refresh" content="0;URL='/ai-billion-career/'"></meta>
-</head>
-<body>
-</body>
-</html>
+```env
+VITE_SUPABASE_URL=https://emywvwsqzixqsgfzadww.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVteXd2d3Nxeml4cXNnZnphZHd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU0MDM4MzMsImV4cCI6MjA3MDk3OTgzM30.5Dr5TUnqlzdxh2giT0f2PZ6c01xWosREWG72142-4HE
 ```
 
-Update your `ai-career-dashboard/index.html` to handle redirects:
+### Step 3: Create Vercel Configuration File (Optional)
 
-```html
-<!doctype html>
-<html lang="en">
+Create `vercel.json` in the repository root (not in `ai-career-dashboard/`):
 
-<head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/png" href="/favicon.png" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Billion Career</title>
-  <script>
-    // Single Page Apps for GitHub Pages redirect handling
-    (function(l) {
-      if (l.search[1] === '/' ) {
-        var decoded = l.search.slice(1).split('&').map(function(s) {
-          return s.replace(/~and~/g, '&')
-        }).join('?');
-        window.history.replaceState(null, null,
-            l.pathname.slice(0, -1) + decoded + l.hash
-        );
-      }
-    }(window.location))
-  </script>
-</head>
-
-<body>
-  <div id="root"></div>
-  <script type="module" src="/src/main.tsx"></script>
-</body>
-
-</html>
+```json
+{
+  "buildCommand": "cd ai-career-dashboard && npm run build:prod",
+  "outputDirectory": "ai-career-dashboard/dist",
+  "installCommand": "cd ai-career-dashboard && npm install",
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
 ```
 
-### Step 4: Enable GitHub Pages (One-Time Setup)
+This ensures SPA routing works correctly on Vercel.
 
-1. Go to your repository on GitHub
-2. Click **Settings** (top navigation bar)
-3. Click **Pages** (left sidebar, under "Code and automation")
-4. Under **"Build and deployment"** section:
-   - **Source**: Click the dropdown
-   - Select **"GitHub Actions"** (NOT "Deploy from a branch")
-5. Click **Save** (if there's a save button)
+### Step 4: Deploy to Vercel (Method A - Recommended: Git Integration)
 
-**What this does:** Tells GitHub to use your `.github/workflows/deploy.yml` file to build and deploy your site.
+**This is the easiest and recommended method:**
 
----
+1. **Sign up/Login to Vercel:**
+   - Go to [vercel.com](https://vercel.com)
+   - Click "Sign Up" or "Login"
+   - Sign in with GitHub (recommended)
 
-### Step 5: Configure Supabase Environment Variables
+2. **Import Your Repository:**
+   - Click "Add New..." → "Project"
+   - Select your `ai-billion-career` repository
+   - Vercel will auto-detect Vite
 
-**IMPORTANT:** Your Supabase credentials are currently hardcoded in `src/lib/supabase.ts`. While the anon key is safe to expose publicly (it's client-side only), it's better practice to use environment variables.
+3. **Configure Project Settings:**
+   - **Framework Preset:** Vite (should auto-detect)
+   - **Root Directory:** `ai-career-dashboard`
+   - **Build Command:** `npm run build:prod`
+   - **Output Directory:** `dist`
+   - **Install Command:** `npm install`
 
-However, for GitHub Pages deployment, the current approach will work because:
-- The anon key is designed to be used in client-side code
-- Row Level Security (RLS) in Supabase protects your data
-- The actual security is enforced on the Supabase backend
+4. **Add Environment Variables:**
+   - Click "Environment Variables"
+   - Add these variables:
+     ```
+     VITE_SUPABASE_URL=https://emywvwsqzixqsgfzadww.supabase.co
+     VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVteXd2d3Nxeml4cXNnZnphZHd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU0MDM4MzMsImV4cCI6MjA3MDk3OTgzM30.5Dr5TUnqlzdxh2giT0f2PZ6c01xWosREWG72142-4HE
+     ```
 
-**No action needed for now**, but for future improvements, consider:
-1. Moving credentials to environment variables
-2. Setting up Supabase RLS policies properly
-3. Using GitHub Secrets for sensitive configuration
+5. **Deploy:**
+   - Click "Deploy"
+   - Wait 1-2 minutes
+   - Your app will be live!
 
----
+### Step 5: Deploy to Vercel (Method B - CLI)
 
-### Step 6: Push Your Code
+**Alternative method using command line:**
 
-Every time you push to the `main` branch, deployment happens automatically:
+1. **Install Vercel CLI:**
+   ```bash
+   npm install -g vercel
+   ```
 
-```bash
-git add .
-git commit -m "Your commit message"
-git push origin main
-```
+2. **Login to Vercel:**
+   ```bash
+   vercel login
+   ```
 
-**What happens next:**
-1. GitHub detects the push to `main`
-2. Triggers the "Deploy to GitHub Pages" workflow
-3. Builds your Vite + React app as static files
-4. Deploys to GitHub Pages
-5. Your site updates in 2-3 minutes
+3. **Deploy:**
+   ```bash
+   # From repository root
+   vercel
+   ```
 
----
+4. **Answer the prompts:**
+   - Set up and deploy? `Y`
+   - Which scope? Select your account
+   - Link to existing project? `N`
+   - Project name? `ai-billion-career` (or your preference)
+   - In which directory is your code? `ai-career-dashboard`
+   - Override settings? `Y`
+   - Build Command: `npm run build:prod`
+   - Output Directory: `dist`
+   - Development Command: `npm run dev`
 
-### Step 7: Monitor Deployment
+5. **Add environment variables via CLI:**
+   ```bash
+   vercel env add VITE_SUPABASE_URL
+   # Paste: https://emywvwsqzixqsgfzadww.supabase.co
 
-1. Go to your repository on GitHub
-2. Click the **Actions** tab (top navigation)
-3. You'll see the workflow run: **"Deploy to GitHub Pages"**
-4. Click on it to see detailed logs
-5. Wait for the green checkmark ✅ (usually 2-3 minutes)
+   vercel env add VITE_SUPABASE_ANON_KEY
+   # Paste: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVteXd2d3Nxeml4cXNnZnphZHd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU0MDM4MzMsImV4cCI6MjA3MDk3OTgzM30.5Dr5TUnqlzdxh2giT0f2PZ6c01xWosREWG72142-4HE
+   ```
 
-**Status indicators:**
-- 🟡 **Yellow dot** = Running
-- ✅ **Green checkmark** = Success (your site is live!)
-- ❌ **Red X** = Failed (check the logs for errors)
+6. **Deploy to production:**
+   ```bash
+   vercel --prod
+   ```
 
----
+### Step 6: Enable Supabase Integration (Optional but Recommended)
 
-### Step 8: Access Your Live Site
+1. **In Vercel Dashboard:**
+   - Go to your project
+   - Click "Integrations" tab
+   - Search for "Supabase"
+   - Click "Add Integration"
 
-Once deployment succeeds, your site is available at:
+2. **Connect Supabase:**
+   - Select your Supabase project
+   - Vercel will automatically sync environment variables
+   - Enable preview branch database creation (optional)
 
-**Main URL:**
-```
-https://<your-github-username>.github.io/ai-billion-career/
-```
+**Benefits:**
+- Automatic environment variable sync
+- Preview databases for PR branches
+- Simplified management
 
-**Note:** Your Supabase backend runs independently, so all authentication and database features will work as expected.
+### Step 7: Verify Deployment
+
+1. **Check deployment status:**
+   - Go to your Vercel dashboard
+   - Look for green "Ready" status
+   - Click "Visit" to see your live site
+
+2. **Your live URL will be:**
+   ```
+   https://ai-billion-career.vercel.app
+   ```
+   Or a similar auto-generated URL
+
+### Step 8: Automatic Deployments
+
+**Now configured! Every time you push to your repository:**
+
+1. **Push to main branch:**
+   ```bash
+   git add .
+   git commit -m "Your commit message"
+   git push origin main
+   ```
+
+2. **Vercel automatically:**
+   - Detects the push
+   - Builds your app
+   - Deploys to production
+   - Updates your live site (1-2 minutes)
+
+3. **Pull Request Preview Deployments:**
+   - Every PR gets a unique preview URL
+   - Test changes before merging
+   - Share with team/stakeholders
 
 ---
 
 ## 🔧 How It Works (Technical Details)
 
-### GitHub Actions Workflow
+### Vercel Deployment Pipeline
 
-The `.github/workflows/deploy.yml` file contains the automated deployment process:
+When you push to your repository:
 
-1. **Trigger:** Runs on every push to `main` branch (or manual trigger)
+1. **Trigger:** Vercel detects git push via webhook
 2. **Build Process:**
-   - Checks out your code
-   - Sets up Node.js 20
-   - Installs dependencies with `npm ci`
-   - Builds the static site with `npm run build:prod`
-   - Generates the `dist/` directory with all HTML/CSS/JS
+   - Clones your repository
+   - Navigates to `ai-career-dashboard/` directory
+   - Installs dependencies with `npm install`
+   - Runs `npm run build:prod`
+   - Generates optimized `dist/` directory
 3. **Deploy Process:**
-   - Uploads the `dist/` directory as an artifact
-   - Deploys to GitHub Pages
-   - Makes your site live
+   - Uploads assets to Vercel's global CDN
+   - Configures SPA routing (rewrites to index.html)
+   - Makes your site live on edge network
+   - Invalidates old cache
 
-### Vite Configuration
+### Vite + Vercel Optimization
 
-The `vite.config.ts` file needs to be configured for GitHub Pages:
+Vercel automatically optimizes your Vite build:
 
-```js
-base: '/ai-billion-career/', // Matches your GitHub repo name
+- **Code Splitting** - JavaScript split into chunks
+- **Tree Shaking** - Removes unused code
+- **Compression** - Gzip and Brotli compression
+- **Caching** - Aggressive caching with hashed filenames
+- **CDN** - Assets served from nearest edge location
+
+### Environment Variables
+
+Vercel injects environment variables at build time:
+
+```typescript
+// During build, Vercel replaces these with actual values
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 ```
 
-This ensures all asset paths are correctly prefixed with your repository name.
+**Important:** All `VITE_*` variables are embedded in the client bundle (public).
 
 ---
 
@@ -308,19 +307,33 @@ This is a **Single Page Application (SPA)** architecture:
 
 ### What Triggers Deployment
 
-✅ **Push to main branch** - Automatic
-✅ **Manual trigger** - Go to Actions > Deploy to GitHub Pages > Run workflow
-❌ **Pull requests** - Does NOT deploy (only builds for testing)
-❌ **Other branches** - Does NOT deploy
+✅ **Push to main branch** - Deploys to production
+✅ **Pull requests** - Creates preview deployment with unique URL
+✅ **Manual deployment** - Via Vercel dashboard or CLI
+✅ **All branches** - Can be configured to deploy preview
 
-### Deployment Permissions
+### Preview Deployments (Huge Advantage!)
 
-The workflow has these permissions (configured in `deploy.yml`):
-- `contents: read` - Read your repository code
-- `pages: write` - Deploy to GitHub Pages
-- `id-token: write` - Required for Pages authentication
+Every pull request automatically gets:
+- **Unique preview URL:** `https://ai-billion-career-pr-123.vercel.app`
+- **Isolated environment** with its own environment variables
+- **Comment on PR** with deployment URL
+- **Automatic updates** when you push new commits
 
-These are automatically granted by GitHub, no manual setup needed.
+**Example workflow:**
+1. Create PR for new feature
+2. Vercel builds and deploys preview
+3. Test on preview URL
+4. Share with team/stakeholders
+5. Merge when ready → auto-deploys to production
+
+### Deployment Status
+
+Vercel provides real-time status:
+- **Building** - 🔨 Compilation in progress
+- **Ready** - ✅ Successfully deployed
+- **Error** - ❌ Build failed (with detailed logs)
+- **Canceled** - ⏹️ Manually stopped
 
 ---
 
@@ -328,60 +341,87 @@ These are automatically granted by GitHub, no manual setup needed.
 
 ### Deployment Fails
 
-1. **Check Actions logs:**
-   - Go to Actions tab
-   - Click on the failed workflow run
-   - Expand the failed step to see error messages
+1. **Check Vercel deployment logs:**
+   - Go to Vercel dashboard
+   - Click on your project
+   - Click on the failed deployment
+   - View detailed build logs
 
 2. **Common issues:**
-   - **Build errors:** Fix TypeScript/lint errors in your code
-     ```bash
-     cd ai-career-dashboard
-     npm run lint
-     npm run build:prod
-     ```
-   - **Permission denied:** Make sure GitHub Pages is enabled in Settings
-   - **404 on deployment:** Verify `base` path in `vite.config.ts` matches your repo name
-   - **Missing package-lock.json:** Run `npm install` to generate it
+
+   **Build errors:**
+   ```bash
+   cd ai-career-dashboard
+   npm run lint        # Check for errors
+   npm run build:prod  # Test build locally
+   ```
+
+   **Wrong directory:**
+   - Verify Root Directory is set to `ai-career-dashboard` in Vercel settings
+
+   **Missing environment variables:**
+   - Go to Project Settings → Environment Variables
+   - Ensure `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are set
+
+   **Build command mismatch:**
+   - Build Command should be: `npm run build:prod`
+   - Output Directory should be: `dist`
 
 ### Site Shows 404 Error
 
-1. **Verify GitHub Pages is enabled:**
-   - Settings > Pages > Source = "GitHub Actions"
+1. **Check Vercel deployment status:**
+   - Dashboard should show "Ready" status
+   - Visit the deployment URL from dashboard
 
-2. **Check deployment status:**
-   - Actions tab should show successful deployment
+2. **Verify SPA routing config:**
+   - Check `vercel.json` has the rewrite rule
+   - Or configure in Vercel dashboard: Settings → Rewrites
 
-3. **Verify URL structure:**
-   - Correct: `https://username.github.io/ai-billion-career/`
-   - Wrong: `https://username.github.io/` (missing repo name)
-
-4. **Check base path in vite.config.ts:**
-   ```typescript
-   base: '/ai-billion-career/', // Must match repo name exactly
-   ```
-
-### CSS/JavaScript Not Loading
-
-If you see errors like "Failed to load resource" in browser console:
-
-1. **Check browser console** for 404 errors on asset files
-2. **Verify base path** in `vite.config.ts` matches repo name exactly
-3. **Clear browser cache** and hard refresh (Cmd/Ctrl + Shift + R)
-4. **Test build locally:**
+3. **Test locally first:**
    ```bash
    cd ai-career-dashboard
    npm run build:prod
    npm run preview
    ```
 
+### Environment Variables Not Working
+
+If Supabase connection fails:
+
+1. **Verify variables are set in Vercel:**
+   - Project Settings → Environment Variables
+   - Check variable names: `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`
+   - Ensure they're set for "Production", "Preview", and "Development"
+
+2. **Redeploy after adding variables:**
+   - Environment variables only apply to new deployments
+   - Trigger redeploy: Deployments → ⋯ → Redeploy
+
+3. **Check variable values:**
+   - Console log in browser to verify (OK for anon key, it's public)
+   ```typescript
+   console.log(import.meta.env.VITE_SUPABASE_URL)
+   ```
+
 ### Routing Issues (404 on page refresh)
 
 If direct URLs like `/dashboard` show 404:
 
-1. **Verify 404.html exists** in `ai-career-dashboard/public/`
-2. **Check the redirect script** in `index.html` is present
-3. **Test locally** with the preview command
+1. **Add rewrite rule in `vercel.json`:**
+   ```json
+   {
+     "rewrites": [
+       { "source": "/(.*)", "destination": "/index.html" }
+     ]
+   }
+   ```
+
+2. **Or configure in Vercel dashboard:**
+   - Settings → Rewrites
+   - Source: `/(.*)`
+   - Destination: `/index.html`
+
+3. **Redeploy** after configuration change
 
 ### Supabase Connection Issues
 
@@ -394,11 +434,27 @@ If you see authentication or database errors:
 
 ### Changes Not Appearing
 
-1. **Wait 2-3 minutes** after deployment succeeds
-2. **Hard refresh** your browser (Cmd/Ctrl + Shift + R)
-3. **Check Actions tab** to confirm latest deployment succeeded
-4. **Verify you pushed to `main` branch:** `git branch` should show `* main`
-5. **Clear browser cache completely** or test in incognito mode
+1. **Check deployment succeeded:**
+   - Vercel dashboard should show "Ready" with your latest commit
+   - Check the commit hash matches your local commit
+
+2. **Hard refresh browser:**
+   - Cmd/Ctrl + Shift + R (hard refresh)
+   - Or open in incognito mode
+
+3. **Verify deployment URL:**
+   - Make sure you're visiting the correct URL
+   - Production: `https://ai-billion-career.vercel.app`
+   - Not preview URL: `https://ai-billion-career-git-...`
+
+4. **Check if deployment is still building:**
+   - Vercel shows "Building" status
+   - Wait 1-2 minutes for build to complete
+
+5. **Trigger manual redeploy:**
+   - Go to Deployments tab
+   - Click ⋯ on latest deployment
+   - Click "Redeploy"
 
 ---
 
@@ -443,85 +499,130 @@ npm run preview
 ```
 Visit: http://localhost:4173
 
-**Important:** The preview server doesn't perfectly simulate GitHub Pages' base path behavior. Test thoroughly after deploying to catch any path-related issues.
+**Important:** The local preview server simulates production, but Vercel's edge network may behave slightly differently. Always test on Vercel preview deployments for critical changes.
 
 ---
 
 ## 📊 Monitoring Deployments
 
-### Check Recent Deployments
+### Vercel Dashboard
 
-1. Go to **Actions** tab
-2. See history of all workflow runs
-3. Each run shows:
-   - Commit message that triggered it
-   - Time it ran
-   - Duration
-   - Status (success/failure)
+Your deployment hub at vercel.com:
 
-### View Live Site Status
+1. **Overview Tab:**
+   - Production deployment status
+   - Latest commit deployed
+   - Deployment history
+   - Quick access to domains
 
-After deployment succeeds:
-1. Go to **Settings > Pages**
-2. You'll see: "Your site is live at [URL]"
-3. Click "Visit site" to open in new tab
+2. **Deployments Tab:**
+   - Complete deployment history
+   - Filter by branch, status, or date
+   - Each deployment shows:
+     - Commit message
+     - Branch name
+     - Build duration
+     - Deploy time
+     - Preview URL
 
-### Environments
+3. **Analytics Tab (Pro feature):**
+   - Page views
+   - Top pages
+   - User locations
+   - Performance metrics
 
-GitHub creates a "github-pages" environment automatically:
-1. Go to your repository home page
-2. Look in the right sidebar under "Environments"
-3. Click "github-pages" to see deployment history
-4. Shows timestamps of each deployment
+### Real-Time Build Logs
+
+Watch builds in progress:
+1. Click on any deployment
+2. View real-time build output
+3. See npm install, build steps, deploy
+4. Copy logs for debugging
+
+### Deployment Notifications
+
+Configure notifications:
+1. Go to Project Settings → Notifications
+2. Enable:
+   - **Email notifications** for failed deployments
+   - **Slack integration** for team updates
+   - **GitHub comments** on PRs (auto-enabled)
+
+### Performance Monitoring
+
+Vercel provides built-in metrics:
+- **Build Time:** How long builds take
+- **Cold Start Time:** Initial page load
+- **Edge Network Performance:** Global response times
 
 ---
 
 ## 🌐 Custom Domain (Optional)
 
-If you want to use your own domain instead of `github.io`:
+If you want to use your own domain instead of `vercel.app`:
 
-### Add Custom Domain
+### Add Custom Domain in Vercel
 
-1. Go to **Settings > Pages**
-2. Under **"Custom domain"**, enter your domain (e.g., `career.example.com`)
-3. Click **Save**
-4. Add DNS records at your domain registrar:
-   - **For apex domain (example.com):**
-     - Add A records pointing to GitHub's IPs:
-       - `185.199.108.153`
-       - `185.199.109.153`
-       - `185.199.110.153`
-       - `185.199.111.153`
-   - **For subdomain (career.example.com):**
-     - Add CNAME record pointing to `<username>.github.io`
+1. **Purchase a domain** (if you don't have one):
+   - Namecheap, Google Domains, Cloudflare, etc.
 
-5. Wait for DNS propagation (up to 24 hours)
-6. GitHub will automatically issue an SSL certificate
-7. Enable "Enforce HTTPS" in Settings > Pages
+2. **Add domain in Vercel:**
+   - Go to Project Settings → Domains
+   - Enter your domain (e.g., `aicareer.com` or `career.example.com`)
+   - Click "Add"
 
-### Update Configuration
+3. **Configure DNS:**
 
-After adding custom domain, update `vite.config.ts`:
+   **Option A: Vercel Nameservers (Recommended - Easiest)**
+   - Vercel provides nameservers
+   - Update nameservers at your domain registrar
+   - Vercel manages all DNS automatically
+   - SSL certificate auto-provisioned
 
-```typescript
-// Remove the base path for custom domain
-base: '/', // Changed from '/ai-billion-career/'
-```
+   **Option B: Custom DNS Records**
 
-Also update the 404.html file:
+   For **apex domain** (example.com):
+   ```
+   Type: A
+   Name: @
+   Value: 76.76.21.21
+   ```
 
-```html
-<meta http-equiv="refresh" content="0;URL='/'"></meta>
-```
+   For **subdomain** (career.example.com):
+   ```
+   Type: CNAME
+   Name: career
+   Value: cname.vercel-dns.com
+   ```
 
-Then rebuild and push:
-```bash
-cd ai-career-dashboard
-npm run build:prod
-git add .
-git commit -m "Configure for custom domain"
-git push origin main
-```
+4. **Wait for verification:**
+   - DNS propagation: 5 minutes to 48 hours
+   - Vercel shows "Valid Configuration" when ready
+   - SSL certificate automatically issued
+
+5. **Set as primary domain (optional):**
+   - Project Settings → Domains
+   - Click "..." on your domain
+   - Select "Set as Primary Domain"
+   - All deployments use this domain
+
+### No Code Changes Needed!
+
+Unlike GitHub Pages, Vercel handles custom domains without any code changes:
+- ✅ No `base` path configuration needed
+- ✅ No build config changes
+- ✅ No redirect scripts needed
+- ✅ Automatic SSL certificates
+- ✅ Automatic redirects (www → non-www or vice versa)
+
+### Multiple Domains
+
+You can add multiple domains:
+- `aicareer.com` (apex)
+- `www.aicareer.com` (www subdomain)
+- `app.aicareer.com` (custom subdomain)
+
+Vercel automatically redirects all to your primary domain.
 
 ---
 
@@ -556,10 +657,12 @@ npm run preview         # Test the production build
 ### Environment Variables
 
 Keep sensitive data secure:
-- Never commit `.env` file (already in `.gitignore`)
-- Use `.env.example` to document required variables
-- For GitHub Pages, hardcoded values are OK for public anon keys
-- For production apps with secrets, use a different hosting platform (Vercel, Netlify)
+- ✅ Never commit `.env` file (already in `.gitignore`)
+- ✅ Use `.env.example` to document required variables
+- ✅ Set all env vars in Vercel dashboard, not in code
+- ✅ Use different values for Production, Preview, and Development environments
+- ⚠️ Remember: `VITE_*` variables are public (embedded in client bundle)
+- ✅ Never use service role key in frontend code
 
 ### Branch Protection (Optional)
 
@@ -569,53 +672,130 @@ For team projects, protect the main branch:
 3. Enable "Require status checks to pass before merging"
 4. Enable "Require branches to be up to date before merging"
 
-### Supabase Best Practices
+### Supabase + Vercel Best Practices
 
 1. **Enable Row Level Security (RLS)** on all tables
-2. **Set up proper policies** for authenticated users
-3. **Use service role key** only in backend/server code (never in client)
-4. **Monitor usage** in Supabase Dashboard to avoid hitting free tier limits
+   - This is your primary security layer
+   - Anon key is public, RLS protects data
+
+2. **Set up proper RLS policies** for authenticated users
+   - Test policies thoroughly
+   - Use Supabase SQL editor to verify
+
+3. **Use Vercel-Supabase integration:**
+   - Automatically syncs environment variables
+   - Creates preview databases for PR branches
+   - Simplifies multi-environment setup
+
+4. **Monitor usage** in both dashboards:
+   - Supabase: Database queries, storage, auth
+   - Vercel: Bandwidth, build minutes, function invocations
+
+5. **Never use service role key** in frontend/Vercel:
+   - Service role bypasses RLS
+   - Only for backend servers (if you add them later)
+
+### Vercel-Specific Tips
+
+1. **Use preview deployments** for testing:
+   - Every PR gets isolated environment
+   - Test before merging to production
+   - Share with stakeholders for feedback
+
+2. **Enable Vercel Analytics** (optional):
+   - Free tier includes basic analytics
+   - See real user performance data
+   - Identify slow pages
+
+3. **Set up deployment protection** (Pro feature):
+   - Password-protect preview deployments
+   - Useful for client demos
+
+4. **Use Vercel CLI for local development:**
+   ```bash
+   vercel dev  # Runs local dev with production env vars
+   ```
 
 ---
 
 ## 📈 Performance & Optimization
 
-Your Vite + React app is optimized for GitHub Pages:
+Your Vite + React app is highly optimized on Vercel:
 
-✅ **Vite build optimization** - Fast builds, optimized bundles
-✅ **Code splitting** - JavaScript split into chunks for faster loading
-✅ **Global CDN** - GitHub serves from edge locations worldwide
-✅ **Compressed assets** - CSS and JS are minified and compressed
-✅ **React** - Efficient rendering and updates
-✅ **Supabase** - Fast backend with global edge network
+✅ **Vercel Edge Network** - 70+ global edge locations for fast delivery
+✅ **Vite build optimization** - Fast builds, tree-shaking, minification
+✅ **Automatic code splitting** - JavaScript split into chunks
+✅ **Smart caching** - Aggressive caching with cache invalidation
+✅ **Brotli compression** - Better than Gzip, automatic
+✅ **HTTP/2 & HTTP/3** - Faster protocol support
+✅ **Supabase edge network** - Fast database queries globally
 
 ### Loading Times
 
-Expected performance:
-- **First load:** 1-3 seconds (includes downloading React, UI libraries, and connecting to Supabase)
-- **Subsequent visits:** < 1 second (browser cache + service worker potential)
+Expected performance on Vercel:
+- **First load:** 0.5-2 seconds (global CDN + optimized bundles)
+- **Subsequent visits:** < 0.5 seconds (edge cache + browser cache)
 - **Page interactions:** Instant (client-side React)
-- **Database queries:** 100-500ms (depends on Supabase region)
+- **Database queries:** 100-300ms (Supabase edge functions)
 
-### Optimization Tips
+### Vercel Optimizations (Automatic)
 
-1. **Lazy load routes** - Use React.lazy() for code splitting
-2. **Optimize images** - Compress images before adding to repo
-3. **Monitor bundle size** - Run `npm run build:prod` and check dist/ size
-4. **Use Supabase edge functions** - For complex queries, use database functions
-5. **Enable Supabase caching** - Configure cache headers in Supabase
+Vercel automatically optimizes:
+1. **Asset compression** - Brotli + Gzip
+2. **Image optimization** - If you use next/image or @vercel/og
+3. **Smart caching** - Static assets cached at edge
+4. **Preloading** - Critical resources preloaded
+5. **HTTP/2 Server Push** - Faster resource delivery
+
+### Additional Optimization Tips
+
+1. **Lazy load routes:**
+   ```typescript
+   const DashboardPage = React.lazy(() => import('./pages/DashboardPage'))
+   ```
+
+2. **Optimize bundle size:**
+   ```bash
+   cd ai-career-dashboard
+   npm run build:prod
+   # Check dist/ size - aim for < 500KB initial bundle
+   ```
+
+3. **Use Vercel Analytics** to identify slow pages:
+   - Settings → Analytics → Enable
+   - Monitor Real Experience Score (RES)
+
+4. **Enable Supabase caching:**
+   - Use Supabase's built-in query caching
+   - Configure cache headers in API responses
+
+5. **Monitor performance:**
+   ```bash
+   # Check bundle size
+   npm run build:prod
+   ls -lh ai-career-dashboard/dist/assets/
+   ```
+
+### Performance Budget
+
+Aim for these targets:
+- **Total bundle size:** < 500KB (gzipped)
+- **Time to Interactive:** < 3 seconds
+- **Largest Contentful Paint:** < 2.5 seconds
+- **Cumulative Layout Shift:** < 0.1
 
 ---
 
 ## 🔐 Security
 
-### HTTPS
+### HTTPS & SSL
 
-GitHub Pages enforces HTTPS automatically:
-- ✅ All traffic encrypted
-- ✅ Free SSL certificate
+Vercel enforces HTTPS automatically:
+- ✅ All traffic encrypted (TLS 1.3)
+- ✅ Free SSL certificates (Let's Encrypt)
 - ✅ Automatic renewal
-- ✅ Cannot be disabled for `github.io` domains
+- ✅ A+ SSL rating on SSL Labs
+- ✅ HSTS enabled by default
 
 ### Data Security
 
@@ -624,53 +804,99 @@ Your app uses Supabase for data storage:
 - ✅ **Row Level Security (RLS)** - Database-level access control
 - ✅ **Authentication** - Supabase handles auth securely
 - ✅ **Anon key is safe** - Public key with RLS protection
-- ⚠️ **Never expose service role key** - Keep it secret, server-side only
+- ⚠️ **Never expose service role key** - Keep it secret, never in frontend
+
+### Environment Variable Security
+
+Vercel keeps your secrets safe:
+- ✅ Environment variables encrypted at rest
+- ✅ Only available during build and runtime
+- ✅ Not exposed in client-side code (unless `VITE_*` prefix)
+- ✅ Different values for Production/Preview/Development
+- ✅ Team members can use without seeing values
+
+**Remember:** `VITE_*` variables are PUBLIC (embedded in bundle)
+
+### Security Headers
+
+Vercel automatically adds security headers:
+```
+X-Frame-Options: SAMEORIGIN
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Referrer-Policy: strict-origin-when-cross-origin
+```
 
 ### Security Checklist
 
 Before going to production:
+
+**Supabase Setup:**
 1. [ ] Enable RLS on all Supabase tables
 2. [ ] Create proper RLS policies for each table
-3. [ ] Test authentication flow thoroughly
-4. [ ] Review CORS settings in Supabase
-5. [ ] Set up email verification for users
-6. [ ] Configure password requirements
-7. [ ] Enable MFA (Multi-Factor Authentication) option
-8. [ ] Set up monitoring and alerts in Supabase
+3. [ ] Test RLS policies thoroughly
+4. [ ] Set up email verification for users
+5. [ ] Configure password requirements (min 8 chars, etc.)
+6. [ ] Enable MFA (Multi-Factor Authentication) option
+7. [ ] Review CORS settings in Supabase (allow your Vercel domain)
+8. [ ] Set up Supabase monitoring and alerts
+
+**Vercel Setup:**
+9. [ ] Move Supabase credentials to environment variables (Step 2)
+10. [ ] Set environment variables for all environments
+11. [ ] Enable Vercel deployment protection (Pro feature, optional)
+12. [ ] Set up custom domain with HTTPS
+13. [ ] Review team access permissions
+
+**Code Security:**
+14. [ ] Never commit `.env` files
+15. [ ] No service role keys in frontend code
+16. [ ] Sanitize user inputs
+17. [ ] Implement rate limiting (via Supabase or middleware)
+18. [ ] Regular dependency updates (`npm audit`)
 
 ### Current Security Status
 
-Based on your code:
-- ⚠️ Supabase credentials are hardcoded (OK for anon key, but consider env vars)
-- ✅ Using HTTPS for all requests
-- ❓ RLS status unknown - check Supabase dashboard
+After following this guide:
+- ✅ Supabase credentials in environment variables
+- ✅ HTTPS enforced everywhere
+- ⏳ RLS status - **CHECK YOUR SUPABASE DASHBOARD**
+- ✅ SSL certificate auto-provisioned
+- ✅ Security headers enabled
 
 ---
 
 ## 📝 Summary
 
-**Your deployment workflow is:**
+**Your deployment workflow with Vercel:**
 
 1. Make code changes locally in `ai-career-dashboard/`
 2. Test locally with `npm run dev`
-3. Push to `main` branch
-4. GitHub Actions automatically builds and deploys
-5. Site updates in 2-3 minutes
-6. Users access at: `https://<username>.github.io/ai-billion-career/`
+3. Push to `main` branch (or create PR)
+4. Vercel automatically builds and deploys
+5. Site updates in 1-2 minutes
+6. Users access at: `https://ai-billion-career.vercel.app`
 
-**Key files to create/modify:**
-- `.github/workflows/deploy.yml` - Deployment automation (CREATE THIS)
-- `ai-career-dashboard/vite.config.ts` - Add base path configuration
-- `ai-career-dashboard/public/404.html` - SPA fallback (CREATE THIS)
-- `ai-career-dashboard/index.html` - Add redirect handling script
+**What you need to do:**
 
-**Configuration checklist:**
-1. [ ] Add `base: '/ai-billion-career/'` to vite.config.ts
-2. [ ] Create `.github/workflows/deploy.yml` workflow file
-3. [ ] Create `public/404.html` for SPA routing
-4. [ ] Update `index.html` with redirect script
-5. [ ] Enable GitHub Pages in repository settings
-6. [ ] Push to main branch and verify deployment
+**Initial Setup (One-time):**
+1. [ ] Update `src/lib/supabase.ts` to use environment variables (Step 2)
+2. [ ] Create `.env` file with Supabase credentials (Step 2)
+3. [ ] Create `vercel.json` in repository root (Step 3 - optional)
+4. [ ] Sign up for Vercel account at vercel.com (Step 4)
+5. [ ] Import repository and configure project (Step 4)
+6. [ ] Add environment variables in Vercel dashboard (Step 4)
+7. [ ] Deploy and verify (Step 7)
+
+**Optional but Recommended:**
+8. [ ] Enable Supabase integration in Vercel (Step 6)
+9. [ ] Set up custom domain (Custom Domain section)
+10. [ ] Enable RLS on Supabase tables (Security section)
+
+**After setup, automatic deployments work:**
+- Push to `main` → Production deployment
+- Create PR → Preview deployment with unique URL
+- No manual steps needed!
 
 ---
 
@@ -678,28 +904,74 @@ Based on your code:
 
 If you encounter issues:
 
-1. **Check Actions logs** for error messages
-2. **Review this guide** for configuration steps
-3. **Test locally:**
+1. **Check Vercel deployment logs**
+   - Vercel Dashboard → Your Project → Deployments
+   - Click failed deployment for detailed logs
+
+2. **Test locally first:**
    ```bash
    cd ai-career-dashboard
+   npm run lint
    npm run build:prod
    npm run preview
    ```
-4. **Check GitHub Status:** https://www.githubstatus.com/
-5. **GitHub Pages docs:** https://docs.github.com/en/pages
-6. **Vite docs:** https://vitejs.dev/guide/static-deploy.html
-7. **Supabase docs:** https://supabase.com/docs
 
-### Common Resources
+3. **Common Resources:**
+   - **Vercel Docs:** https://vercel.com/docs
+   - **Vite on Vercel:** https://vercel.com/docs/frameworks/vite
+   - **Supabase Docs:** https://supabase.com/docs
+   - **Vercel + Supabase Integration:** https://vercel.com/integrations/supabase
+   - **Vercel Community:** https://github.com/vercel/vercel/discussions
 
-- **Vite + GitHub Pages:** https://vitejs.dev/guide/static-deploy.html#github-pages
-- **SPA fallback for GitHub Pages:** https://github.com/rafgraph/spa-github-pages
-- **Supabase Row Level Security:** https://supabase.com/docs/guides/auth/row-level-security
+4. **Check Service Status:**
+   - Vercel Status: https://www.vercel-status.com/
+   - Supabase Status: https://status.supabase.com/
+
+5. **Get Support:**
+   - Vercel Discord: https://vercel.com/discord
+   - Supabase Discord: https://discord.supabase.com/
+
+---
+
+## 🎯 Next Steps
+
+After successful deployment:
+
+1. **Test your live app thoroughly**
+   - Authentication flow
+   - Database operations
+   - All pages and routes
+
+2. **Set up monitoring:**
+   - Enable Vercel Analytics
+   - Configure Supabase monitoring
+   - Set up error tracking (e.g., Sentry)
+
+3. **Optimize performance:**
+   - Check Vercel Analytics
+   - Review bundle size
+   - Implement code splitting
+
+4. **Security hardening:**
+   - Complete security checklist
+   - Enable RLS on all tables
+   - Test RLS policies
+
+5. **Share with users:**
+   - Your app is live at `https://ai-billion-career.vercel.app`
+   - Or your custom domain if configured
 
 ---
 
 **Last Updated:** 2025-11-15
-**Tech Stack:** React + Vite + Supabase + GitHub Pages
-**Build Status:** ⏳ Configuration Required (follow steps above)
-**Deployment Method:** GitHub Actions (Automatic once configured)
+**Tech Stack:** React + Vite + Supabase + Vercel
+**Deployment Method:** Vercel (Git Integration)
+**Status:** ⏳ Ready to configure (follow steps above)
+
+**Advantages of this stack:**
+- ✅ Zero-config deployment
+- ✅ Automatic preview deployments for PRs
+- ✅ Global CDN with edge network
+- ✅ Native Supabase integration
+- ✅ Free tier perfect for this project
+- ✅ Scales automatically as you grow

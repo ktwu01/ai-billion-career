@@ -2,7 +2,7 @@
 
 A comprehensive AI-powered career platform designed to help users navigate and plan their professional journey in the AI industry.
 
-## 🚀 Features
+## Features
 
 - **Interactive Dashboard**: Comprehensive career tracking and progress visualization
 - **Career Assessment**: Personalized skill evaluation and career path recommendations
@@ -11,7 +11,7 @@ A comprehensive AI-powered career platform designed to help users navigate and p
 - **Skill Development**: Tailored learning paths and skill development recommendations
 - **Industry Insights**: Real-time AI industry trends and salary information
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Frontend**: React 18 + TypeScript + Vite
 - **UI Framework**: Tailwind CSS + Shadcn/ui components
@@ -21,13 +21,13 @@ A comprehensive AI-powered career platform designed to help users navigate and p
 - **Build Tool**: Vite
 - **Package Manager**: npm/pnpm
 
-## 📋 Prerequisites
+## Prerequisites
 
 Before you begin, ensure you have installed:
 - Node.js (v18 or higher)
 - npm or pnpm package manager
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Clone the Repository
 
@@ -95,7 +95,7 @@ To preview the production build locally:
 npm run preview
 ```
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 src/
@@ -113,14 +113,14 @@ src/
 └── main.tsx            # Application entry point
 ```
 
-## 🎨 Styling
+## Styling
 
 This project uses:
 - **Tailwind CSS** for utility-first styling
 - **Shadcn/ui** for pre-built accessible components
 - **Custom yellow theme** with professional color scheme
 
-## 🔧 Available Scripts
+## Available Scripts
 
 - `npm run dev` - Start development server
 - `npm run build` - Build for production
@@ -128,7 +128,7 @@ This project uses:
 - `npm run lint` - Run ESLint
 - `npm run type-check` - Run TypeScript type checking
 
-## 🌐 Deployment
+## Deployment
 
 The project is configured for easy deployment on platforms like:
 - Vercel
@@ -138,7 +138,7 @@ The project is configured for easy deployment on platforms like:
 
 For automated deployment, the build artifacts are located in the `dist` directory after running the build command.
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
@@ -146,14 +146,14 @@ For automated deployment, the build artifacts are located in the `dist` director
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📝 License
+## License
 
 This project is proprietary and confidential.
 
-## 🆘 Support
+## Support
 
 For support or questions, please contact the development team.
 
 ---
 
-**AI Billion Career Platform** - Empowering your AI career journey 🚀
+**AI Billion Career Platform** - Empowering your AI career journey
