@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ai-career-dashboard
+        working-directory: ai-billion-career
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -30,7 +30,7 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
-          cache-dependency-path: ai-career-dashboard/package-lock.json
+          cache-dependency-path: ai-billion-career/package-lock.json
 
       - name: Install dependencies
         run: npm ci
@@ -44,7 +44,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ai-career-dashboard/dist
+          path: ai-billion-career/dist
 
   deploy:
     needs: build
