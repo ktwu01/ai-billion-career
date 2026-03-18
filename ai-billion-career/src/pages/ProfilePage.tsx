@@ -129,7 +129,7 @@ export function ProfilePage() {
             <h3 className="text-lg font-semibold text-secondary-foreground gradient-text count-animation">
               {profile.full_name || 'Name not set'}
             </h3>
-            <p className="text-accent shimmer">{profile.current_role || 'Position not set'}</p>
+            <p className="text-accent shimmer">{profile.current_role_field || 'Position not set'}</p>
             <p className="text-sm text-gray-500 hover-lift">{profile.email}</p>
           </div>
         </div>
@@ -155,8 +155,8 @@ export function ProfilePage() {
             </label>
             <input
               type="text"
-              value={profile.current_role || ''}
-              onChange={(e) => setProfile({...profile, current_role: e.target.value})}
+              value={profile.current_role_field || ''}
+              onChange={(e) => setProfile({...profile, current_role_field: e.target.value})}
               className="w-full px-3 py-2 glassmorphism border border-gray-700 rounded-lg focus:ring-2 focus:ring-accent focus:border-accent text-secondary-foreground glow-on-hover transition-all duration-300"
               placeholder="e.g. Senior Software Engineer"
             />

@@ -350,7 +350,7 @@ export function DashboardPage() {
         targetSalary,
         currentProgress,
         goalsCompletedThisWeek,
-        currentRole: profile?.current_role || 'Not Set'
+        currentRole: profile?.current_role_field || 'Not Set'
       })
       
       setMetricsData(metricsData)

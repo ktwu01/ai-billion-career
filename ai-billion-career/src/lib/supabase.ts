@@ -23,7 +23,7 @@ export interface UserProfile {
   email: string
   full_name: string
   avatar_url?: string
-  current_role?: string
+  current_role_field?: string
   experience_years?: number
   target_salary?: number
   industry_preference?: string
